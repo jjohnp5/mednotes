@@ -1,0 +1,46 @@
+{
+  "name": "mednotes",
+  "version": "1.0.0",
+  "description": "Medical Note Taking System",
+  "main": "server.js",
+  "scripts": {
+    "lint": "eslint  */*.js --ignore-pattern /client/* --fix",
+    "start": "if-env NODE_ENV=production && npm run start:prod || npm run start:dev",
+    "start:prod": "node server.js",
+    "start:dev": "concurrently \"nodemon --ignore 'client/*'\" \"npm run client\"",
+    "client": "cd client && npm run start",
+    "install": "cd client && yarn install",
+    "build": "cd client && npm run build",
+    "heroku-postbuild": "npm run build"
+  },
+  "engines": {
+    "yarn": "1.13.0",
+    "node": "14.17.4"
+  },
+  "author": "John Lagmay",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "bcrypt": "^5.0.1",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "if-env": "^1.0.4",
+    "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^3.1.2",
+    "moment": "^2.29.1",
+    "mongoose": "^5.13.5",
+    "mongoose-auto-increment": "^5.0.1",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
+    "passport-local-mongoose": "^6.1.0",
+    "react-redux-loading-bar": "^5.0.2",
+    "react-router-dom": "^5.2.0",
+    "regexp-clone": "^1.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^6.2.1",
+    "eslint": "^7.32.0",
+    "eslint-config-google": "^0.14.0",
+    "nodemon": "^2.0.12"
+  }
+}
