@@ -3,17 +3,21 @@ const router = new express.Router();
 const fieldController = require('../controllers/templateField');
 const passport = require('passport');
 const {protected, jwtStrategy} = require('../middleware/jwt');
+const {userOwnsRecord} = require('../middleware/selfsigned');
 passport.use(jwtStrategy);
 
-// Matches with "/api/punch"
+// Matches with "/api/field"
 router.route('/')
-    .post(protected, fieldController.create);
+    .post(protected, userOwnsRecord, fieldController.create);
 
-// Matches with "/api/punch/:id"
+router.route('/template/:templateId')
+    .get(protected, userOwnsRecord, fieldController.findByTemplateId);
+
+// Matches with "/api/field/:id"
 router
     .route('/:id')
-    .get(protected, fieldController.findById)
-    .put(protected, fieldController.update)
-    .delete(protected, fieldController.remove);
+    .get(protected, userOwnsRecord, fieldController.findById)
+    .put(protected, userOwnsRecord, fieldController.update)
+    .delete(protected, userOwnsRecord, fieldController.remove);
 
 module.exports = router;

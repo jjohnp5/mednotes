@@ -1,4 +1,4 @@
-const {User} = require('../models/User');
+const {User, Template} = require('../models/');
 const bcrypt = require('bcrypt');
 
 module.exports = {
@@ -7,7 +7,7 @@ module.exports = {
       const UserModel = await User.find().sort({lastName: 1}).populate({
         path: 'template',
         populate: {
-          path: 'fields',
+          path: 'fieldMaps',
         },
       });
       res.status(200).json(UserModel);
@@ -17,7 +17,14 @@ module.exports = {
   },
   findById: async (req, res) => {
     try {
-      const User = await User.findById(req.params.id);
+      const User = await User.findById(req.params.id).populate({
+        path: 'template',
+        populate: {
+          path: 'fieldMaps',
+        },
+      }).populate({path: 'patients', populate: {
+        path: 'visits',
+      }});
       res.status(200).json(User);
     } catch (error) {
       res.status(422).json(error);
@@ -35,15 +42,19 @@ module.exports = {
   },
   update: async (req, res) => {
     try {
-      const user = User.findOneAndUpdate({_id: req.params.id}, req.body);
-      res.status(200).json(user);
+      console.log(req.body);
+      const user = await User.findOneAndUpdate({_id: req.params.id}, req.body).exec();
+      console.log(user);
+      return res.status(200).json(user);
     } catch (err) {
-      res.status(422).json(err);
+      console.log(err);
+      return res.status(422).json(err);
     }
   },
   remove: async (req, res) => {
     try {
       const user = await User.findById(req.params.id);
+      await Template.remove({user: req.params.id});
       const removedUser = await user.remove();
       res.status(200).json(removedUser);
     } catch (err) {

@@ -1,52 +1,37 @@
-const {User} = require('../models/User');
-const Template = require('../models/Template');
-const jwt = require('jsonwebtoken');
+const {Template, User, TemplateField, TemplateFieldJunction} = require('../models/index');
 
 
 module.exports = {
   findAll: async (req, res) => {
     try {
-      const user = await User.findOne({_id: req.params.id})
+      const user = await User.findOne({_id: req.query.userId})
           .populate({
             path: 'template',
             populate: {
-              path: 'fields',
+              path: 'fieldMaps',
             },
           });
-      res.status(200).json(user);
+      res.status(200).json(user.template);
     } catch (err) {
       res.status(422).json(err);
     }
   },
   findById: async (req, res) => {
-    const currentUser = jwt.verify(req.headers.authorization.split(' ')[1], 'timeismoney');
-    if (parseInt(req.params.id) === currentUser._id) {
-      try {
-        const user = await User.findOne({_id: req.params.id}).populate(
-            {
-              path: 'template',
-              populate: {
-                path: 'fields',
-              },
-            });
-        if (user.template && user.template.length > 0) {
-          res.status(200).json(user.template);
-        } else {
-          res.status(200).json([]);
-        }
-      } catch (err) {
-        res.status(422).json(err);
-      }
-    } else {
-      res.status(401).json({message: 'You are unauthorized to access this resource'});
+    try {
+      const template = await Template.findById(req.params.id).exec();
+      return res.status(200).json(template);
+    } catch (err) {
+      res.status(422).json(err);
     }
   },
   create: async (req, res) => {
     try {
-      const template = await Template.create(req.body.template);
-      await User.findOneAndUpdate({_id: req.params.userid}, {$push: {template: timesheet._id}});
+      const body = {...req.body, user: req.query.userId};
+      const template = await Template.create(body);
+      await User.findOneAndUpdate({_id: req.query.userId}, {$push: {template: template._id}}).exec();
       res.status(200).json(template);
     } catch (err) {
+      console.log(err);
       res.status(422).json(err);
     }
   },
@@ -61,6 +46,9 @@ module.exports = {
   remove: async (req, res) => {
     try {
       const template = await Template.findById({_id: req.params.id});
+      await TemplateField.deleteMany({template: template._id});
+      await TemplateFieldJunction.deleteMany({template: template._id});
+      await User.findOneAndUpdate({_id: req.query.userId}, {$pull: {template: template._id}}).exec();
       const removedTemplate = await template.remove();
       res.status(200).json(removedTemplate);
     } catch (err) {

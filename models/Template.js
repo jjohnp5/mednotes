@@ -6,8 +6,8 @@ const templateSchema = new Schema({
   name: {type: String, required: true},
   description: {type: String, required: false},
   user: {type: Schema.Types.ObjectId, ref: 'User'},
-  fields: [{
-    type: Schema.Types.ObjectId, ref: 'TemplateField',
+  fieldMaps: [{
+    type: Schema.Types.ObjectId, ref: 'TemplateFieldJunction',
   }],
 });
 

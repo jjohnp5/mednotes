@@ -7,14 +7,13 @@
     "lint": "eslint  */*.js --ignore-pattern /client/* --fix",
     "start": "if-env NODE_ENV=production && npm run start:prod || npm run start:dev",
     "start:prod": "node server.js",
-    "start:dev": "concurrently \"nodemon --ignore 'client/*'\" \"npm run client\"",
+    "start:dev": "concurrently \"nodemon server.js --ignore client/\" \"npm run client\"",
     "client": "cd client && npm run start",
-    "install": "cd client && yarn install",
+    "install": "cd client && npm install",
     "build": "cd client && npm run build",
     "heroku-postbuild": "npm run build"
   },
   "engines": {
-    "yarn": "1.13.0",
     "node": "14.17.4"
   },
   "author": "John Lagmay",
@@ -24,6 +23,7 @@
     "bcrypt": "^5.0.1",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "helmet": "^4.6.0",
     "if-env": "^1.0.4",
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^3.1.2",
@@ -42,5 +42,9 @@
     "eslint": "^7.32.0",
     "eslint-config-google": "^0.14.0",
     "nodemon": "^2.0.12"
+  },
+  "nodemonConfig": {
+    "ignore": ["test/*", "./client/"],
+    "delay": 2500
   }
 }

@@ -25,7 +25,6 @@ const login = (req, res) => {
         id: user._id,
         username: user.username,
         position: user.position,
-        template: user.template,
         firstName: user.firstName,
         lastName: user.lastName,
       }, 'nursesrock');

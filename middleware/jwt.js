@@ -1,5 +1,5 @@
 const passport = require('passport');
-const {User} = require('../models/User');
+const User = require('../models/User');
 const {ExtractJwt} = require('passport-jwt');
 const JWTStrategy = require('passport-jwt').Strategy;
 
@@ -15,7 +15,7 @@ const jwtStrategy = new JWTStrategy(jwtOptions,
       try {
         const user = await User.findById(jwtPayload.id).exec();
         return cb(null, user);
-      } catch (e) {
+      } catch (err) {
         return cb(err);
       }
     },

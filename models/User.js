@@ -5,10 +5,13 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
   firstName: {type: String, required: true},
   lastName: {type: String, required: true},
-  username: {type: String, required: true},
+  username: {type: String, required: true, index: true, unique: true},
   password: {type: String, required: true},
   template: [{
     type: Schema.Types.ObjectId, ref: 'Template',
+  }],
+  patients: [{
+    type: Schema.Types.ObjectId, ref: 'Patient',
   }],
   position: {type: Number, default: 1, enum: [1, 2, 3], required: true},
   addedDate: {type: Date, default: Date.now},
