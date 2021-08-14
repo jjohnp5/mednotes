@@ -57,9 +57,16 @@ const Fields = ({ fieldMap, fields }) => {
   return (
     <Fragment>
       <Row>
-        <Button variant="success" onClick={handleOpenModal}>
-          Add Field-Value Pair
-        </Button>
+        <Col></Col>
+        <Col>
+          <Button
+            className="float-right"
+            variant="success"
+            onClick={handleOpenModal}
+          >
+            Add Field-Value Pair
+          </Button>
+        </Col>
       </Row>
       {fields &&
         fields.map((f) => (

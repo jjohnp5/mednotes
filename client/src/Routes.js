@@ -33,7 +33,7 @@ const Routes = () => {
   return (
     <Router>
       <Navbar bg="dark" expand="md" variant="dark">
-        <Container>
+        <Container fluid>
           <Navbar.Brand href="/">Note Taker</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
@@ -68,7 +68,7 @@ const Routes = () => {
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      <FullScreen>
+      <FullScreen fluid>
         <Switch>
           <Route path="/login" component={LoginComponent} />
           <Route

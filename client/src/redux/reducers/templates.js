@@ -8,7 +8,7 @@ export const templateReducer = produce((draft, action) => {
     case UPDATE_TEMPLATE:
       const updateTemplate = draft.map((t) => {
         if (t._id === action.payload._id) {
-          return action.payload;
+          return { ...t, ...action.payload };
         }
         return t;
       });

@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from "react";
+import { React, useEffect, useState, Fragment } from "react";
 import { Button, Col, Row, Modal, Form, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { handleAddFieldmap } from "../../redux/actions/fieldMaps";
@@ -36,8 +36,8 @@ const Fieldmaps = ({ template }) => {
     console.log(fieldMaps);
   }, [fieldMaps]);
   return (
-    <Row>
-      <Col xs={12}>
+    <Fragment>
+      <Col xs={12} className="py-3">
         <Button variant="success" onClick={handleAddMap}>
           Add Group
         </Button>
@@ -77,7 +77,7 @@ const Fieldmaps = ({ template }) => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </Row>
+    </Fragment>
   );
 };
 

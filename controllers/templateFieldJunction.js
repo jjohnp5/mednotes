@@ -28,7 +28,9 @@ module.exports = {
   },
   update: async (req, res) => {
     try {
-      const junction = await TemplateFieldJunction.findOneAndUpdate({_id: req.params.id}, req.body);
+      const junction = await TemplateFieldJunction.findOneAndUpdate({_id: req.params.id}, req.body).populate({
+        path: 'templateFields',
+      }).exec();
       res.status(200).json(junction);
     } catch (e) {
       res.status(422).json(err);
