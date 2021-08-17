@@ -1,11 +1,12 @@
-import { React, useState } from "react";
-import { useDispatch } from "react-redux";
-import { login } from "../services/user";
-import jwt_decode from "jwt-decode";
+import { Button, Col, Form, Row } from "react-bootstrap";
+import React, { useState } from "react";
+
 import axios from "axios";
-import { Form, Button, Row, Col } from "react-bootstrap";
-import styled from "styled-components";
 import { handleLogin } from "../redux/actions/user";
+import jwt_decode from "jwt-decode";
+import { login } from "../services/user";
+import styled from "styled-components";
+import { useDispatch } from "react-redux";
 
 const TallRow = styled(Row)`
   min-height: ${window.innerHeight * 0.5}px;
@@ -33,6 +34,7 @@ const LoginComponent = ({ history }) => {
     e.preventDefault();
     try {
       const loginData = await login({ username, password });
+      localStorage.setItem("token", loginData.data.token);
       axios.defaults.headers.common.Authorization = `Bearer ${loginData.data.token}`;
       const decoded = jwt_decode(loginData.data.token);
       dispatch(handleLogin(decoded));

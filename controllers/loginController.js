@@ -27,7 +27,7 @@ const login = (req, res) => {
         position: user.position,
         firstName: user.firstName,
         lastName: user.lastName,
-      }, 'nursesrock');
+      }, process.env.JWT_SECRET || 'nursesrock', {expiresIn: '7d'});
       return res.json({
         token,
       });

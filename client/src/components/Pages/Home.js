@@ -1,17 +1,25 @@
-import { React } from "react";
 import { Col, Row } from "react-bootstrap";
+import React, { Fragment } from "react";
+
 import Profile from "../Profile";
 import Templates from "../TemplateComponents/Templates";
+import { useSelector } from "react-redux";
 
 const Home = () => {
+  const user = useSelector((store) => store.user);
+
   return (
     <Row>
-      <Col>
-        <Profile />
-      </Col>
-      <Col>
-        <Templates />
-      </Col>
+      {user && user.id && (
+        <Fragment>
+          <Col>
+            <Profile />
+          </Col>
+          <Col>
+            <Templates />
+          </Col>
+        </Fragment>
+      )}
     </Row>
   );
 };

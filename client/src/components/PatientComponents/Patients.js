@@ -10,19 +10,23 @@ import {
   Row,
 } from "react-bootstrap";
 import React, { Fragment, useEffect, useState } from "react";
+import { createPatient, getPatientsByUserId } from "../../services/patient";
 import { useDispatch, useSelector } from "react-redux";
 
-import Template from "./Template";
-import axios from "axios";
-import { getTemplateByUserId } from "../../services/template";
-import { handleAddFieldmap } from "../../redux/actions/fieldMaps";
-import { handleAddTemplate } from "../../redux/actions/template";
+import Patient from "./Patient";
+import { handleAddPatient } from "../../redux/actions/patient";
 
-const Templates = () => {
+const Patients = () => {
   const user = useSelector((store) => store.user);
+  const patients = useSelector((store) => store.patients);
   const templates = useSelector((store) => store.templates);
-  const [template, setTemplate] = useState({ name: "", description: "" });
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [patient, setPatient] = useState({
+    firstName: "",
+    lastName: "",
+    template: "",
+    user: user.id,
+  });
+  const [selectedPatient, setSelectedPatient] = useState(null);
   const [show, setShow] = useState(false);
   const dispatch = useDispatch();
 
@@ -34,44 +38,36 @@ const Templates = () => {
 
   const handleClick = async (e) => {
     e.preventDefault();
-    const addedTemplate = await axios.post(
-      "/api/template",
-      {
-        user: user.id,
-        name: template.name,
-        description: template.description,
-      },
-      {
-        params: {
-          userId: user.id,
-        },
-      }
-    );
-    const newTemplate = [...templates, addedTemplate.data];
-    dispatch(handleAddTemplate(newTemplate));
-    setTemplate({ name: "", description: "" });
+    const currentPatient = { ...patient };
+    Object.keys(currentPatient).forEach((k) => {
+      if (!currentPatient[k]) delete currentPatient[k];
+    });
+    const addedPatient = await createPatient(patient);
+    const newPatient = [...patients, addedPatient.data];
+    dispatch(handleAddPatient(newPatient));
+    setPatient({ name: "", description: "" });
     setShow(false);
   };
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setTemplate({ ...template, [name]: value });
+    setPatient({ ...patient, [name]: value });
   };
 
   const handleDropdownSelect = (e) => {
     const { value } = e.target;
     console.log(value);
-    setSelectedTemplate(templates[value]);
-    dispatch(handleAddFieldmap(templates[value].fieldMaps));
+    setSelectedPatient(patients[value]);
   };
-  const getTemplates = async () => {
-    const templates = await getTemplateByUserId(user.id);
-    dispatch(handleAddTemplate(templates.data));
+  const getPatients = async () => {
+    const patients = await getPatientsByUserId(user.id);
+    dispatch(handleAddPatient(patients.data));
   };
   useEffect(() => {
-    getTemplates();
+    getPatients();
+    console.log(patients);
     // eslint-disable-next-line
   }, [user]);
-  useEffect(() => {}, [templates]);
+  useEffect(() => {}, [patients]);
   return (
     <Fragment>
       <Row className="pt-4">
@@ -79,29 +75,29 @@ const Templates = () => {
           <InputGroup>
             <DropdownButton
               variant="outline-primary"
-              title="Templates"
-              id="template-dropdown"
+              title="Patients"
+              id="patient-dropdown"
             >
-              {templates.map((t, i) => (
+              {patients.map((t, i) => (
                 <Dropdown.Item
                   as="button"
                   onClick={handleDropdownSelect}
                   value={i}
                   key={t._id}
                 >
-                  {t.name}
+                  {`${t.firstName} ${t.lastName}`}
                 </Dropdown.Item>
               ))}
             </DropdownButton>
           </InputGroup>
         </Col>
         <Col>
-          <Button onClick={handleShow}>Add New Template</Button>
+          <Button onClick={handleShow}>Add New Patient</Button>
         </Col>
       </Row>
       <Modal size="lg" centered show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>New Template</Modal.Title>
+          <Modal.Title>New Patient</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Container>
@@ -110,20 +106,35 @@ const Templates = () => {
                 <Form.Group>
                   <Form.Control
                     type="text"
-                    placeholder="Name"
-                    name="name"
-                    value={template.name}
+                    placeholder="First Name"
+                    name="firstName"
+                    value={patient.firstName}
                     onChange={handleChange}
                   />
                 </Form.Group>
                 <Form.Group>
                   <Form.Control
-                    as="textarea"
+                    type="text"
                     placeholder="Description"
-                    name="description"
+                    name="lastName"
                     onChange={handleChange}
-                    value={template.description}
+                    value={patient.lastName}
                   />
+                </Form.Group>
+                <Form.Group>
+                  <Form.Control
+                    as="select"
+                    name="template"
+                    onChange={handleChange}
+                    value={patient.template}
+                  >
+                    <option value="">-Select Template-</option>
+                    {templates.map((t) => (
+                      <option key={t._id} value={t._id}>
+                        {t.name}
+                      </option>
+                    ))}
+                  </Form.Control>
                 </Form.Group>
               </Col>
             </Row>
@@ -139,14 +150,14 @@ const Templates = () => {
         </Modal.Footer>
       </Modal>
 
-      {selectedTemplate && (
-        <Template
-          template={selectedTemplate}
-          setSelectedTemplate={setSelectedTemplate}
+      {selectedPatient && (
+        <Patient
+          patient={selectedPatient}
+          setSelectedPatient={setSelectedPatient}
         />
       )}
     </Fragment>
   );
 };
 
-export default Templates;
+export default Patients;

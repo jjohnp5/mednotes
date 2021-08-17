@@ -1,8 +1,9 @@
-import axios from "axios";
-import { Fragment, React, useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { handleAddTemplate } from "../../redux/actions/template";
+
 import Template from "./Template";
+import axios from "axios";
+import { handleAddTemplate } from "../../redux/actions/template";
 
 const TemplateList = () => {
   const templates = useSelector((store) => store.templates);

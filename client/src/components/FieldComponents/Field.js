@@ -1,7 +1,8 @@
-import { Fragment, React, useState } from "react";
-import { Button, Col, Form, Row } from "react-bootstrap";
-import styled from "styled-components";
 import { BsCheck, BsDash } from "react-icons/bs";
+import { Button, Col, Form, Row } from "react-bootstrap";
+import  React, { Fragment, useState } from "react";
+
+import styled from "styled-components";
 
 const StyledInput = styled(Form.Control)`
   border: none;

@@ -1,14 +1,15 @@
-import { Fragment, React, useState } from "react";
-import { Button, Col, Row, Form } from "react-bootstrap";
-import { useDispatch } from "react-redux";
-import { handleRemoveTemplateFieldmaps } from "../../redux/actions/fieldMaps";
+import { Button, Col, Row } from "react-bootstrap";
+import React, { Fragment, useEffect, useState } from "react";
+import { deleteTemplate, updateTemplate } from "../../services/template";
 import {
   handleRemoveTemplate,
   handleUpdateTemplate,
 } from "../../redux/actions/template";
-import { deleteTemplate, updateTemplate } from "../../services/template";
+
 import Fieldmaps from "../FieldmapComponents/Fieldmaps";
 import UpdatableInput from "../Reusables/UpdatableInput";
+import { handleRemoveTemplateFieldmaps } from "../../redux/actions/fieldMaps";
+import { useDispatch } from "react-redux";
 
 const Template = ({ template, setSelectedTemplate }) => {
   // const templates = useSelector(store => store.templates)
@@ -35,6 +36,10 @@ const Template = ({ template, setSelectedTemplate }) => {
     dispatch(handleUpdateTemplate(updatedTemplate));
     setTemplateUpdated(false);
   };
+  useEffect(() => {
+    setTemplate(template);
+    // eslint-disable-next-line
+  }, [template]);
   return (
     <Fragment>
       <hr></hr>
@@ -48,14 +53,14 @@ const Template = ({ template, setSelectedTemplate }) => {
             value={localTemplate.name}
           />
         </Col>
-        <Col>
+        <Col className="my-auto">
           {templateUpdated ? (
             <Button variant="success" onClick={handleUpdate}>
               Update
             </Button>
           ) : (
             <Button variant="danger" onClick={handleDelete}>
-              Delete
+              Delete Template
             </Button>
           )}
         </Col>

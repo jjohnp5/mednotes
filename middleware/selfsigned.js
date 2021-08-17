@@ -7,7 +7,7 @@ const userOwnsRecord = (req, res, next) => {
     if (!user) {
       throw Error('User Id is required.');
     }
-    const decodedToken = jwt.verify(req.headers.authorization.split(' ')[1], 'nursesrock');
+    const decodedToken = jwt.verify(req.headers.authorization.split(' ')[1], process.env.JWT_SECRET || 'nursesrock');
     if (user === decodedToken.id) {
       return next();
     }

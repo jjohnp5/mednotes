@@ -6,7 +6,7 @@ const JWTStrategy = require('passport-jwt').Strategy;
 
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: 'nursesrock',
+  secretOrKey: process.env.JWT_SECRET || 'nursesrock',
 };
 
 const jwtStrategy = new JWTStrategy(jwtOptions,

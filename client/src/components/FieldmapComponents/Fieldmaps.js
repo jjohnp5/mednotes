@@ -1,9 +1,10 @@
-import { React, useEffect, useState, Fragment } from "react";
-import { Button, Col, Row, Modal, Form, Container } from "react-bootstrap";
+import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap";
+import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { handleAddFieldmap } from "../../redux/actions/fieldMaps";
-import { createJunction } from "../../services/junction";
+
 import Fieldmap from "./Fieldmap";
+import { createJunction } from "../../services/junction";
+import { handleAddFieldmap } from "../../redux/actions/fieldMaps";
 
 const Fieldmaps = ({ template }) => {
   const fieldMaps = useSelector((store) => store.fieldMaps);
@@ -25,6 +26,10 @@ const Fieldmaps = ({ template }) => {
   const handleClick = async () => {
     const fieldMap = await createJunction(newFieldmap, user.id);
     dispatch(handleAddFieldmap([...fieldMaps, fieldMap.data]));
+    setNewFieldmap({
+      name: "",
+      template: template._id,
+    });
     setShow(false);
   };
 
@@ -49,7 +54,7 @@ const Fieldmaps = ({ template }) => {
 
       <Modal size="lg" centered show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>New Template</Modal.Title>
+          <Modal.Title>New Field Group</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Container>

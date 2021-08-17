@@ -2,7 +2,7 @@ import {
   ADD_VISIT,
   UPDATE_VISIT,
   REMOVE_VISIT,
-  REMOVE_PATIENT_FIELDMAP,
+  REMOVE_PATIENT_VISITS,
 } from "../constants";
 import produce from "immer";
 
@@ -28,7 +28,7 @@ export const visitReducer = produce((draft, action) => {
       });
       draft = [...removeVisit];
       return draft;
-    case REMOVE_PATIENT_FIELDMAP:
+    case REMOVE_PATIENT_VISITS:
       const removePatientVisits = draft.filter((t) => {
         return t.patient !== action.payload;
       });

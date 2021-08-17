@@ -1,13 +1,19 @@
-import { React, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import LoginComponent from "./components/LoginComponent";
-import styled from "styled-components";
-import { Navbar, Nav, Container, Col, Row } from "react-bootstrap";
-import { LinkContainer } from "react-router-bootstrap";
-import LogoutComponent from "./components/LogoutComponent";
+import { Col, Container, Nav, Navbar, Row } from "react-bootstrap";
+import React,  {useEffect} from "react";
+import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
 import Home from "./components/Pages/Home";
+import { LinkContainer } from "react-router-bootstrap";
+import LoginComponent from "./components/LoginComponent";
+import LogoutComponent from "./components/LogoutComponent";
+import Patients from "./components/PatientComponents/Patients";
 import Templates from "./components/TemplateComponents/Templates";
+import { getPatientsByUserId } from "./services/patient";
+import { getTemplateByUserId } from "./services/template";
+import { handleAddPatient } from "./redux/actions/patient";
+import { handleAddTemplate } from "./redux/actions/template";
+import styled from "styled-components";
 
 const FullScreen = styled(Container)`
   min-height: ${window.innerHeight}px;
@@ -27,8 +33,20 @@ const FloatingNavlink = styled(Nav.Link)`
 
 const Routes = () => {
   const user = useSelector((store) => store.user);
+  const dispatch = useDispatch();
+  const getTemplatesAndPatients = async () => {
+      const templates = await getTemplateByUserId(user.id);
+      const patients = await getPatientsByUserId(user.id);
+      dispatch(handleAddPatient(patients.data));
+      dispatch(handleAddTemplate(templates.data));
+  }
   useEffect(() => {
+    if(user && user.id){
+      getTemplatesAndPatients();
+
+    }
     console.log(user);
+    // eslint-disable-next-line
   }, [user]);
   return (
     <Router>
@@ -74,6 +92,10 @@ const Routes = () => {
           <Route
             path={["/templates", "/templates/:templateId"]}
             component={Templates}
+          />
+          <Route
+            path={["/patients", "/patients/:patientId"]}
+            component={Patients}
           />
           <Route path="/" component={Home} />
         </Switch>
